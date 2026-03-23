@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand - Premium Ecommerce</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-blue: #0d6efd;
+            --gray-light: #f7f8f9;
+            --text-main: #1c1c1c;
+            --border-color: #e3e8ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f7f8f9; 
+            margin: 0;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* --- HEADER STYLING --- */
+        header { 
+            background: #fff; 
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container { 
+            max-width: 1200px; 
+            margin: auto; 
+            padding: 15px 20px; 
+        }
+        
+        .navbar-main { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            gap: 20px; 
+        }
+        
+        .brand-section { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            text-decoration: none; 
+        }
+        
+        .brand-logo { 
+            background: var(--primary-blue); 
+            color: #fff; 
+            width: 40px; 
+            height: 40px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            font-size: 20px; 
+        }
+        
+        .brand-text { 
+            font-size: 24px; 
+            font-weight: 800; 
+            color: #1e3b5c; 
+        }
+
+        .search-bar-container { 
+            flex-grow: 1; 
+            display: flex; 
+            max-width: 600px; 
+        }
+        
+        .search-bar-container input { 
+            width: 100%; 
+            border: 2px solid var(--primary-blue); 
+            border-right: none; 
+            padding: 10px 15px; 
+            border-radius: 8px 0 0 8px; 
+            outline: none; 
+        }
+        
+        .search-btn { 
+            background: var(--primary-blue); 
+            color: #fff; 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 0 8px 8px 0; 
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .user-actions { 
+            display: flex; 
+            gap: 20px; 
+        }
+        
+        .action-item { 
+            text-align: center; 
+            color: #8b96a5; 
+            cursor: pointer; 
+            text-decoration: none; 
+            font-size: 13px;
+            position: relative;
+            transition: color 0.2s;
+        }
+        
+        .action-item:hover {
+            color: var(--primary-blue);
+        }
+        
+        .action-item i { 
+            display: block; 
+            font-size: 20px; 
+            margin-bottom: 3px; 
+            color: #8b96a5;
+            transition: color 0.2s;
+        }
+
+        .action-item:hover i {
+            color: var(--primary-blue);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .navbar-bottom { 
+            border-top: 1px solid var(--border-color); 
+            padding: 12px 0; 
+        }
+        
+        .nav-flex { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1200px; 
+            margin: auto; 
+            padding: 0 20px; 
+            font-size: 15px; 
+            font-weight: 500; 
+        }
+        
+        .nav-links-left span { 
+            margin-right: 20px; 
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-links-left span:hover {
+            color: var(--primary-blue);
+        }
+        
+        .nav-links-right span { 
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        /* --- SIDEBAR OVERLAY --- */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* --- CART SIDEBAR --- */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 380px;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            visibility: hidden;
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+            visibility: visible;
+        }
+
+        .cart-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .cart-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .close-sidebar:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-image i {
+            font-size: 30px;
+            color: #ccc;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .cart-item-size {
+            font-size: 12px;
+            color: #8b96a5;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 2px;
+        }
+
+        .quantity-control form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #8b96a5;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover:not(:disabled) {
+            background: var(--gray-light);
+            color: var(--primary-blue);
+        }
+
+        .quantity-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .quantity-value {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .cart-item-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .cart-summary {
+            border-top: 2px solid var(--border-color);
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 12px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .checkout-btn:hover {
+            background: #218838;
+        }
+
+        .saved-items {
+            padding: 20px;
+            background: white;
+        }
+
+        .saved-items h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-main);
+        }
+
+        .saved-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .saved-item:last-child {
+            border-bottom: none;
+        }
+
+        .saved-item-image {
+            width: 50px;
+            height: 50px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .saved-item-image i {
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        .saved-item-details {
+            flex: 1;
+        }
+
+        .saved-item-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .saved-item-price {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .saved-item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .saved-action-btn {
+            font-size: 11px;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .saved-action-btn.move {
+            color: var(--primary-blue);
+        }
+
+        .saved-action-btn.remove {
+            color: #dc3545;
+        }
+
+        /* --- ORDER SIDEBAR (NEW) --- */
+        .order-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            visibility: hidden;
+        }
+
+        .order-sidebar.active {
+            right: 0;
+            visibility: visible;
+        }
+
+        .order-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .order-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .order-card {
+            padding: 20px;
+            border-bottom: 8px solid #f7f8f9;
+            transition: background 0.2s;
+        }
+
+        .order-card:hover {
+            background: #fafafa;
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .order-id {
+            font-size: 13px;
+            color: #8b96a5;
+            font-weight: 600;
+        }
+
+        .order-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .order-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .order-status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .order-status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-date {
+            font-size: 12px;
+            color: #8b96a5;
+            margin-bottom: 15px;
+        }
+
+        .order-items-list {
+            margin-bottom: 15px;
+        }
+
+        .order-product-item {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .order-product-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-product-img {
+            width: 50px;
+            height: 50px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .order-product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .order-product-img i {
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        .order-product-info {
+            flex: 1;
+        }
+
+        .order-product-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 3px;
+        }
+
+        .order-product-qty {
+            font-size: 11px;
+            color: #8b96a5;
+        }
+
+        .order-product-price {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .order-total-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #8b96a5;
+        }
+
+        .order-total-amount {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .order-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            border: none;
+        }
+
+        .order-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .order-btn.primary:hover {
+            background: #0b5ed7;
+        }
+
+        .order-btn.secondary {
+            background: #f7f8f9;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .order-btn.secondary:hover {
+            background: #e9ecef;
+        }
+
+        .empty-orders {
+            padding: 60px 20px;
+            text-align: center;
+            color: #8b96a5;
+        }
+
+        .empty-orders i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+
+        /* --- PROFILE SIDEBAR --- */
+        .profile-sidebar {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 320px;
+            height: 100%;
+            background: white;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            visibility: hidden;
+        }
+
+        .profile-sidebar.active {
+            right: 0;
+            visibility: visible;
+        }
+
+        .profile-header {
+            background: #f8f9fa;
+            padding: 25px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .profile-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gray-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b96a5;
+            font-size: 24px;
+            border: 2px solid var(--border-color);
+        }
+
+        .profile-info h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .auth-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-link {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .auth-link.signin {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .auth-link.signin:hover {
+            background: #0b5ed7;
+        }
+
+        .auth-link.register {
+            background: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .auth-link.register:hover {
+            background: rgba(13,110,253,0.1);
+        }
+
+        .profile-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .menu-section {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .menu-section:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 20px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: var(--gray-light);
+            color: var(--primary-blue);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            color: #8b96a5;
+            font-size: 16px;
+        }
+
+        .menu-item:hover i {
+            color: var(--primary-blue);
+        }
+
+        .menu-section-title {
+            padding: 8px 20px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #8b96a5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- FOOTER STYLING --- */
+        .footer { 
+            background: #fff; 
+            padding: 40px 0 0; 
+            margin-top: 50px; 
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr; 
+            gap: 30px; 
+            padding-bottom: 40px;
+            width: 100%;
+        }
+        
+        .blue-box-logo { 
+            background: #0d6efd; 
+            color: white; 
+            width: 40px; 
+            height: 40px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 8px; 
+            margin-right: 10px; 
+        }
+        
+        .footer-brand p { 
+            color: #505050; 
+            margin-top: 15px; 
+            font-size: 14px; 
+            line-height: 1.5; 
+        }
+        
+        .social-icons a { 
+            background: #bdc4cd; 
+            color: white; 
+            width: 32px; 
+            height: 32px; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 50%; 
+            text-decoration: none; 
+            margin-right: 8px; 
+            transition: 0.3s; 
+        }
+        
+        .social-icons a:hover { 
+            background: var(--primary-blue); 
+        }
+        
+        .footer-col h5 { 
+            font-weight: 700; 
+            margin-bottom: 20px; 
+            font-size: 16px; 
+        }
+        
+        .footer-col ul { 
+            list-style: none; 
+            padding: 0; 
+        }
+        
+        .footer-col li { 
+            margin-bottom: 10px; 
+            color: #8b96a5; 
+            font-size: 14px; 
+            cursor: pointer; 
+        }
+        
+        .footer-col li:hover { 
+            color: var(--primary-blue); 
+        }
+
+        .footer-bottom { 
+            background: #eee; 
+            padding: 20px 0;
+            width: 100%;
+        }
+
+        .footer-bottom .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .bottom-content { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .lang-select { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 14px; 
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 992px) {
+            .search-bar-container {
+                max-width: 400px;
+            }
+
+            .nav-links-left span:not(:first-child),
+            .nav-links-right span:last-child {
+                display: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 12px 15px;
+            }
+
+            .brand-text {
+                font-size: 20px;
+            }
+
+            .brand-logo {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+
+            .search-bar-container { 
+                display: none; 
+            }
+
+            .user-actions {
+                gap: 12px;
+            }
+
+            .action-item span {
+                display: none;
+            }
+
+            .action-item i {
+                font-size: 22px;
+            }
+
+            .navbar-bottom {
+                display: none;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .cart-sidebar,
+            .order-sidebar,
+            .profile-sidebar {
+                max-width: 85%;
+            }
+
+            .footer-grid { 
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+
+            .footer .container {
+                padding: 0 15px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header-container {
+                padding: 10px 12px;
+            }
+
+            .brand-text {
+                font-size: 18px;
+            }
+
+            .brand-logo {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .user-actions {
+                gap: 8px;
+            }
+
+            .action-item i {
+                font-size: 20px;
+            }
+
+            .cart-sidebar,
+            .order-sidebar,
+            .profile-sidebar {
+                max-width: 100%;
+            }
+
+            .cart-header h3,
+            .order-header h3 {
+                font-size: 16px;
+            }
+
+            .close-sidebar {
+                font-size: 20px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-brand {
+                text-align: center;
+            }
+
+            .footer-brand .logo-section {
+                justify-content: center;
+                display: flex;
+                align-items: center;
+            }
+
+            .social-icons {
+                text-align: center;
+            }
+
+            .footer-col {
+                text-align: center;
+            }
+
+            .footer-col ul {
+                text-align: center;
+            }
+
+            .bottom-content {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .bottom-content p {
+                font-size: 12px;
+            }
+
+            .footer { 
+                padding: 30px 0 0;
+            }
+
+            .footer-grid {
+                padding-bottom: 30px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .brand-text {
+                font-size: 16px;
+            }
+
+            .header-container {
+                padding: 8px 10px;
+            }
+
+            .user-actions {
+                gap: 6px;
+            }
+
+            .action-item i {
+                font-size: 18px;
+            }
+
+            .cart-badge {
+                width: 16px;
+                height: 16px;
+                font-size: 9px;
+                right: -6px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .cart-items::-webkit-scrollbar,
+        .order-list::-webkit-scrollbar,
+        .profile-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .cart-items::-webkit-scrollbar-track,
+        .order-list::-webkit-scrollbar-track,
+        .profile-menu::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb,
+        .order-list::-webkit-scrollbar-thumb,
+        .profile-menu::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .cart-items::-webkit-scrollbar-thumb:hover,
+        .order-list::-webkit-scrollbar-thumb:hover,
+        .profile-menu::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h3><i class="fas fa-shopping-cart"></i> Shopping cart</h3>
+        <button class="close-sidebar" onclick="closeCart()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="cart-items">
+        @php 
+            $subtotal = 0;
+            $cartCount = 0;
+        @endphp
+        
+        @auth
+            @php
+                $carts = \App\Models\Cart::where('user_id', Auth::id())->with('product')->get();
+                $cartCount = $carts->count();
+            @endphp
+            
+            @if($carts->count() > 0)
+                @foreach($carts as $cart)
+                    @php
+                        $itemTotal = $cart->product->price * $cart->quantity;
+                        $subtotal += $itemTotal;
+                    @endphp
+                    
+                    <!-- Cart Item -->
+                    <div class="cart-item">
+                        <div class="cart-item-image">
+                            @if($cart->product->image)
+                                <img src="/products/{{ $cart->product->image }}" alt="{{ $cart->product->name }}">
+                            @else
+                                <i class="fas fa-shopping-bag"></i>
+                            @endif
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">{{ $cart->product->name }}</div>
+                            <div class="cart-item-size">Size: medium | Color: blue | Material: Plastic</div>
+                            <div class="cart-item-footer">
+                                <div class="quantity-control">
+                                    <form action="{{ route('cart.update', $cart->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" name="quantity" value="{{ max(1, $cart->quantity - 1) }}" class="quantity-btn" {{ $cart->quantity <= 1 ? 'disabled' : '' }}>−</button>
+                                    </form>
+                                    <span class="quantity-value">{{ $cart->quantity }}</span>
+                                    <form action="{{ route('cart.update', $cart->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" name="quantity" value="{{ min(100, $cart->quantity + 1) }}" class="quantity-btn">+</button>
+                                    </form>
+                                </div>
+                                <div class="cart-item-price">Rs {{ number_format($itemTotal) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div style="padding: 60px 20px; text-align: center; color: #8b96a5;">
+                    <i class="fas fa-shopping-cart" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Your cart is empty</p>
+                    <p style="font-size: 13px;">Add items to get started!</p>
+                </div>
+            @endif
+        @else
+            <div style="padding: 60px 20px; text-align: center; color: #8b96a5;">
+                <i class="fas fa-user-lock" style="font-size: 48px; margin-bottom: 15px; opacity: 0.3;"></i>
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Please login</p>
+                <p style="font-size: 13px;">Login to view your cart</p>
+                <a href="/login" style="display: inline-block; margin-top: 15px; background: #0d6efd; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">Login Now</a>
+            </div>
+        @endauth
+    </div>
+
+    @auth
+        @if($carts->count() > 0)
+            <div class="cart-summary">
+                <div class="summary-row">
+                    <span>Items ({{ $cartCount }}):</span>
+                    <span>Rs {{ number_format($subtotal) }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>Rs 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount:</span>
+                    <span style="color: #28a745;">Rs 0</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>Rs {{ number_format($subtotal) }}</span>
+                </div>
+                <a href="{{ route('cart.index') }}" class="checkout-btn" style="text-decoration: none; text-align: center;">
+                    <i class="fas fa-shopping-cart"></i> View Cart ({{ $cartCount }} items)
+                </a>
+            </div>
+
+            <div class="saved-items">
+                <h4>Quick Actions</h4>
+                
+                <div class="saved-item">
+                    <div class="saved-item-image">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="saved-item-details">
+                        <div class="saved-item-title">Continue Shopping</div>
+                        <div class="saved-item-price">Browse Products</div>
+                    </div>
+                    <div class="saved-item-actions">
+                        <a href="{{ route('product.list') }}" class="saved-action-btn move" style="text-decoration: none;">Go to Shop</a>
+                    </div>
+                </div>
+
+                <div class="saved-item">
+                    <div class="saved-item-image">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="saved-item-details">
+                        <div class="saved-item-title">Wishlist</div>
+                        <div class="saved-item-price">Saved Items</div>
+                    </div>
+                    <div class="saved-item-actions">
+                        <a href="#" class="saved-action-btn move" style="text-decoration: none;">View</a>
+                    </div>
+                </div>
+
+                <div class="saved-item">
+                    <div class="saved-item-image">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="saved-item-details">
+                        <div class="saved-item-title">My Orders</div>
+                        <div class="saved-item-price">Order History</div>
+                    </div>
+                    <div class="saved-item-actions">
+                        <a href="#" class="saved-action-btn move" style="text-decoration: none;" onclick="toggleOrders(); return false;">View</a>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endauth
+</div>
+
+<!-- Order Sidebar (NEW) -->
+<div class="order-sidebar" id="orderSidebar">
+    <div class="order-header">
+        <h3><i class="fas fa-box"></i> My Orders</h3>
+        <button class="close-sidebar" onclick="closeOrders()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="order-list">
+        @auth
+            @php
+                $orders = \App\Models\Order::with(['items.product'])
+                    ->where('user_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+            @endphp
+            
+            @if($orders->count() > 0)
+                @foreach($orders as $order)
+                    <div class="order-card">
+                        <div class="order-card-header">
+                            <div class="order-id">Order #{{ $order->id }}</div>
+                            <div class="order-status {{ $order->status }}">{{ $order->status }}</div>
+                        </div>
+                        
+                        <div class="order-date">
+                            <i class="far fa-calendar"></i> {{ $order->created_at->format('d M Y, h:i A') }}
+                        </div>
+
+                        <div class="order-items-list">
+                            @foreach($order->items as $item)
+                                <div class="order-product-item">
+                                    <div class="order-product-img">
+                                        @if($item->product && $item->product->image)
+                                            <img src="/products/{{ $item->product->image }}" alt="{{ $item->product->name }}">
+                                        @else
+                                            <i class="fas fa-box"></i>
+                                        @endif
+                                    </div>
+                                    <div class="order-product-info">
+                                        <div class="order-product-name">
+                                            {{ $item->product ? $item->product->name : 'Product Not Available' }}
+                                        </div>
+                                        <div class="order-product-qty">Qty: {{ $item->quantity }}</div>
+                                    </div>
+                                    <div class="order-product-price">
+                                        Rs {{ number_format($item->price * $item->quantity) }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="order-total">
+                            <div class="order-total-label">Total Amount</div>
+                            <div class="order-total-amount">Rs {{ number_format($order->total_amount) }}</div>
+                        </div>
+
+                        <div class="order-actions">
+                            <a href="#" class="order-btn primary">Track Order</a>
+                            @if($order->status == 'pending')
+                                <button class="order-btn secondary">Cancel</button>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="empty-orders">
+                    <i class="fas fa-box-open"></i>
+                    <p style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">No orders yet</p>
+                    <p style="font-size: 13px;">Start shopping to create your first order!</p>
+                    <a href="{{ route('product.list') }}" style="display: inline-block; margin-top: 15px; background: #0d6efd; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">Browse Products</a>
+                </div>
+            @endif
+        @else
+            <div class="empty-orders">
+                <i class="fas fa-user-lock"></i>
+                <p style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">Please login</p>
+                <p style="font-size: 13px;">Login to view your orders</p>
+                <a href="/login" style="display: inline-block; margin-top: 15px; background: #0d6efd; color: white; padding: 10px 25px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">Login Now</a>
+            </div>
+        @endauth
+    </div>
+</div>
+
+<!-- Profile Sidebar -->
+<div class="profile-sidebar" id="profileSidebar">
+    <div class="profile-header">
+        <button class="close-sidebar" onclick="closeProfile()" style="position: absolute; top: 15px; right: 15px;">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="profile-user">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="profile-info">
+                @auth
+                    <h4>{{ Auth::user()->name }}</h4>
+                @else
+                    <h4>Guest User</h4>
+                @endauth
+            </div>
+        </div>
+        @guest
+            <div class="auth-links">
+                <a href="/login" class="auth-link signin">Sign in</a>
+                <a href="/register" class="auth-link register">Register</a>
+            </div>
+        @endguest
+    </div>
+
+    <div class="profile-menu">
+        <div class="menu-section">
+            <a href="/" class="menu-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ route('product.list') }}" class="menu-item">
+                <i class="fas fa-th-large"></i>
+                <span>Categories</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-heart"></i>
+                <span>Favorites</span>
+            </a>
+            @auth
+                <a href="#" class="menu-item" onclick="toggleOrders(); return false;">
+                    <i class="fas fa-box"></i>
+                    <span>My orders</span>
+                </a>
+            @endauth
+        </div>
+
+        <div class="menu-section">
+            <a href="#" class="menu-item">
+                <i class="fas fa-globe"></i>
+                <span>English | PKR</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-phone"></i>
+                <span>Contact us</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-info-circle"></i>
+                <span>About</span>
+            </a>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-section-title">Legal</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-file-contract"></i>
+                <span>User agreement</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-handshake"></i>
+                <span>Partnership</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-shield-alt"></i>
+                <span>Privacy policy</span>
+            </a>
+        </div>
+
+        @auth
+            <div class="menu-section">
+                <a href="/logout" class="menu-item" style="color: #dc3545;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        @endauth
+    </div>
+</div>
+
+<header>
+  <div class="header-container">
+    <div class="navbar-main">
+      <button class="mobile-menu-toggle" onclick="toggleProfile()">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <a href="/" class="brand-section">
+        <div class="brand-logo"><i class="fas fa-shopping-bag"></i></div>
+        <span class="brand-text">Brand</span>
+      </a>
+
+      <div class="search-bar-container">
+        <input type="text" placeholder="Search products...">
+        <button class="search-btn">Search</button>
+      </div>
+
+      <div class="user-actions">
+        <a href="#" class="action-item" onclick="toggleProfile(); return false;">
+          <i class="fas fa-user"></i>
+          <span>Profile</span>
+        </a>
+        <a href="#" class="action-item">
+          <i class="fas fa-heart"></i>
+          <span>Wishlist</span>
+        </a>
+        <a href="#" class="action-item" onclick="toggleCart(); return false;">
+          <i class="fas fa-shopping-cart"></i>
+          @auth
+            @php
+              $cartCount = \App\Models\Cart::where('user_id', Auth::id())->sum('quantity');
+            @endphp
+            @if($cartCount > 0)
+              <span class="cart-badge">{{ $cartCount }}</span>
+            @endif
+          @endauth
+          <span>Cart</span>
+        </a>
+        @auth
+          <a href="#" class="action-item" onclick="toggleOrders(); return false;">
+            <i class="fas fa-box"></i>
+            @php
+              $orderCount = \App\Models\Order::where('user_id', Auth::id())->count();
+            @endphp
+            @if($orderCount > 0)
+              <span class="cart-badge">{{ $orderCount }}</span>
+            @endif
+            <span>Orders</span>
+          </a>
+        @endauth
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar-bottom">
+    <div class="nav-flex">
+      <div class="nav-links-left">
+        <span><i class="fas fa-bars"></i> All Categories</span>
+        <span>Hot Offers</span>
+        <span>Gift Boxes</span>
+        <span>Projects</span>
+        <span>Help</span>
+      </div>
+      <div class="nav-links-right">
+        <span>English, PKR</span>
+        <span>Ship to: Pakistan <i class="fas fa-caret-down"></i></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container py-5" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 3rem 15px;">
+    @yield('content')
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <div class="logo-section">
+                    <div class="blue-box-logo"><i class="fas fa-shopping-bag"></i></div>
+                    <span class="brand-text">Brand</span>
+                </div>
+                <p>Best information about the company goes here but now lorem ipsum is dummy text.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h5>About</h5>
+                <ul><li>About Us</li><li>Find Store</li><li>Categories</li><li>Blogs</li></ul>
+            </div>
+            <div class="footer-col">
+                <h5>Partnership</h5>
+                <ul><li>About Us</li><li>Find Store</li><li>Categories</li><li>Blogs</li></ul>
+            </div>
+            <div class="footer-col">
+                <h5>Information</h5>
+                <ul><li>Help Center</li><li>Money Refund</li><li>Shipping</li><li>Contact Us</li></ul>
+            </div>
+            <div class="footer-col">
+                <h5>For Users</h5>
+                <ul><li>Login</li><li>Register</li><li>Settings</li><li>My Orders</li></ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="bottom-content">
+                <p class="mb-0">© 2026 Ecommerce Web. All rights reserved By <b>Ghulam moin ud din</b>.</p>
+                <div class="lang-select">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg" width="22" alt="UK Flag">
+                    <span>English</span>
+                    <i class="fas fa-chevron-up"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Toggle Cart Sidebar
+    function toggleCart() {
+        const cartSidebar = document.getElementById('cartSidebar');
+        const orderSidebar = document.getElementById('orderSidebar');
+        const profileSidebar = document.getElementById('profileSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        // Close others if open
+        orderSidebar.classList.remove('active');
+        profileSidebar.classList.remove('active');
+        
+        // Toggle cart
+        cartSidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Prevent body scroll when sidebar is open
+        if (cartSidebar.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Close Cart
+    function closeCart() {
+        const cartSidebar = document.getElementById('cartSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        cartSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Toggle Orders Sidebar (NEW)
+    function toggleOrders() {
+        const orderSidebar = document.getElementById('orderSidebar');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const profileSidebar = document.getElementById('profileSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        // Close others if open
+        cartSidebar.classList.remove('active');
+        profileSidebar.classList.remove('active');
+        
+        // Toggle orders
+        orderSidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Prevent body scroll when sidebar is open
+        if (orderSidebar.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Close Orders
+    function closeOrders() {
+        const orderSidebar = document.getElementById('orderSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        orderSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close Profile
+    function closeProfile() {
+        const profileSidebar = document.getElementById('profileSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        profileSidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Toggle Profile Sidebar
+    function toggleProfile() {
+        const profileSidebar = document.getElementById('profileSidebar');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const orderSidebar = document.getElementById('orderSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        // Close others if open
+        cartSidebar.classList.remove('active');
+        orderSidebar.classList.remove('active');
+        
+        // Toggle profile
+        profileSidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Prevent body scroll when sidebar is open
+        if (profileSidebar.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    // Close sidebar when clicking overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+        closeCart();
+        closeOrders();
+        closeProfile();
+        this.classList.remove('active');
+        document.body.style.overflow = '';
+    });
+
+    // Prevent scroll on mobile when sidebar is open
+    window.addEventListener('resize', function() {
+        const cartSidebar = document.getElementById('cartSidebar');
+        const orderSidebar = document.getElementById('orderSidebar');
+        const profileSidebar = document.getElementById('profileSidebar');
+        
+        if (!cartSidebar.classList.contains('active') && 
+            !orderSidebar.classList.contains('active') && 
+            !profileSidebar.classList.contains('active')) {
+            document.body.style.overflow = '';
+        }
+    });
+</script>
+
+</body>
+</html>
