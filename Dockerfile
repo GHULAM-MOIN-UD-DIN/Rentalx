@@ -52,7 +52,8 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # Render uses the PORT environment variable. We set a default of 80.
 ENV PORT=80
 
-# Dynamically change the Apache port to $PORT, then run Apache
+# Dynamically change the Apache port to $PORT, run migrations, then run Apache
 CMD sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf && \
     sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:${PORT}>/" /etc/apache2/sites-available/000-default.conf && \
+    php artisan migrate --force && \
     apache2-foreground
