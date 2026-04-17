@@ -12,11 +12,11 @@ use App\Mail\OtpMail;
 class AuthController extends Controller
 {
     /* ================= FORM PAGES ================= */
-    public function loginForm() { return view("auth.login"); }
-    public function signupForm() { return view("auth.signup"); }
-    public function otpForm() { return view("auth.verify-otp"); }
-    public function forgotForm() { return view("auth.forgot-password"); }
-    public function resetForm() { return view("auth.reset-password"); }
+    public function loginForm() { return view("Auth.login"); }
+    public function signupForm() { return view("Auth.signup"); }
+    public function otpForm() { return view("Auth.verify-otp"); }
+    public function forgotForm() { return view("Auth.forgot-password"); }
+    public function resetForm() { return view("Auth.reset-password"); }
 
     /* ================= LOGIN ================= */
     public function login(Request $req)
