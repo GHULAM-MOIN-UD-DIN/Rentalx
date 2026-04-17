@@ -25,7 +25,7 @@ class ProfileController extends Controller
             $user->load('profile');
         }
         
-        return view('pages.profile', compact('user'));
+        return view('Pages.profile', compact('user'));
     }
 
     /**
@@ -41,7 +41,7 @@ class ProfileController extends Controller
             $user->load('profile');
         }
         
-        return view('pages.profile-edit', compact('user'));
+        return view('Pages.profile-edit', compact('user'));
     }
 
     /**
@@ -177,7 +177,7 @@ class ProfileController extends Controller
     public function settings()
     {
         $user = Auth::user()->load('profile');
-        return view('pages.profile-settings', compact('user'));
+        return view('Pages.profile-settings', compact('user'));
     }
 
     /**
@@ -187,7 +187,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $orders = $user->orders()->with('items.product')->latest()->paginate(10);
-        return view('pages.profile-orders', compact('user', 'orders'));
+        return view('Pages.profile-orders', compact('user', 'orders'));
     }
 
     /**
@@ -197,7 +197,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $appointments = $user->appointments()->with('car')->latest()->paginate(10);
-        return view('pages.profile-appointments', compact('user', 'appointments'));
+        return view('Pages.profile-appointments', compact('user', 'appointments'));
     }
 
     /**
@@ -207,6 +207,6 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $wishlists = $user->wishlists()->with('product')->latest()->paginate(12);
-        return view('pages.wishlist', compact('user', 'wishlists'));
+        return view('Pages.wishlist', compact('user', 'wishlists'));
     }
 }

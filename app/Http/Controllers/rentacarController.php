@@ -11,7 +11,7 @@ class RentacarController extends Controller
     public function rentacar()
     {
         $cars = Car::all(); // Collection - OK for front page
-        return view('pages.rentacar', compact('cars'));
+        return view('Pages.rentacar', compact('cars'));
     }
 
     // Admin List - WITH PAGINATION
@@ -19,13 +19,13 @@ class RentacarController extends Controller
     {
         // ✅ FIXED: Use paginate() instead of all()
         $cars = Car::orderBy('created_at', 'desc')->paginate(12);
-        return view('admin.rentacarlist', compact('cars'));
+        return view('Admin.rentacarlist', compact('cars'));
     }
 
     // Create Form
     public function create()
     {
-        return view('admin.rentacarcreate');
+        return view('Admin.rentacarcreate');
     }
 
     // Store
@@ -70,7 +70,7 @@ class RentacarController extends Controller
     public function edit($id)
     {
         $car = Car::findOrFail($id);
-        return view('admin.rentacarupdate', compact('car'));
+        return view('Admin.rentacarupdate', compact('car'));
     }
 
     // Update

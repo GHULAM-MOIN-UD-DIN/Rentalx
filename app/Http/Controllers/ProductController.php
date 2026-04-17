@@ -17,13 +17,13 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::latest()->paginate(10);
-        return view("admin.product_list", compact("products"));
+        return view("Admin.product_list", compact("products"));
     }
 
     /* ================= CREATE PAGE ================= */
     public function create()
     {
-        return view("admin.create");
+        return view("Admin.create");
     }
 
     /* ================= STORE PRODUCT ================= */
@@ -122,7 +122,7 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail((int)$id);
-        return view("admin.edit", compact("product"));
+        return view("Admin.edit", compact("product"));
     }
 
     /* ================= UPDATE ================= */

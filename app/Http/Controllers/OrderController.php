@@ -244,14 +244,14 @@ class OrderController extends Controller
     {
         $user = Auth::user();
         $orders = Order::where('user_id', $user->id)->with('items.product')->latest()->paginate(10);
-        return view('pages.profile-orders', compact('orders', 'user'));
+        return view('Pages.profile-orders', compact('orders', 'user'));
     }
 
     public function viewOrder($id)
     {
         $user = Auth::user();
         $order = Order::with('items.product')->where('user_id', Auth::id())->findOrFail($id);
-        return view('pages.order-details', compact('order', 'user'));
+        return view('Pages.order-details', compact('order', 'user'));
     }
 
     public function cancelOrder($id)

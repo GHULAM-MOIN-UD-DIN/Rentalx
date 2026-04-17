@@ -241,7 +241,7 @@ class ReviewController extends Controller
             ]);
         }
 
-        return view('admin.reviews.index', compact('reviews', 'stats', 'pendingReviewsCount'));
+        return view('Admin.reviews.index', compact('reviews', 'stats', 'pendingReviewsCount'));
     }
 
     /**
@@ -281,7 +281,7 @@ class ReviewController extends Controller
             ]);
         }
 
-        return view('admin.reviews.pending', compact('reviews', 'stats', 'pendingReviewsCount'));
+        return view('Admin.reviews.pending', compact('reviews', 'stats', 'pendingReviewsCount'));
     }
 
     /**
