@@ -177,7 +177,9 @@ class ProfileController extends Controller
     public function settings()
     {
         $user = Auth::user()->load('profile');
-        return view('Pages.profile-settings', compact('user'));
+        // return view('Pages.profile-settings', compact('user'));
+        return view('Pages.profile-edit', compact('user'));
+
     }
 
     /**
