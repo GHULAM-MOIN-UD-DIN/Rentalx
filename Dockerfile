@@ -2,6 +2,7 @@ FROM php:8.2-apache
 
 # Install dependencies needed for Laravel & Node js
 RUN apt-get update && apt-get install -y \
+    ca-certificates \
     git \
     curl \
     libpng-dev \
