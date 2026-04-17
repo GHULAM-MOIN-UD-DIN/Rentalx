@@ -45,6 +45,14 @@ RUN npm run build
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Create upload directories and set permissions
+RUN mkdir -p /var/www/html/public/products/gallery \
+    /var/www/html/public/car_images \
+    /var/www/html/public/uploads/reviews \
+    /var/www/html/public/uploads/profiles && \
+    chown -R www-data:www-data /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads && \
+    chmod -R 775 /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads
+
 # Change Apache document root to Laravel's public directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
