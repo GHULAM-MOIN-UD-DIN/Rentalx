@@ -145,7 +145,9 @@ class ProfileController extends Controller
             
             // Upload new photo to Cloudinary
             $file = $request->file('photo');
-            $cloudinaryResponse = $file->storeOnCloudinary('rentalx/' . $folder);
+            $cloudinaryResponse = cloudinary()->upload($file->getRealPath(), [
+                'folder' => 'rentalx/' . $folder
+            ]);
             $filename = $cloudinaryResponse->getSecurePath();
             
             if (!$profile->exists) {
