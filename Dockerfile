@@ -49,9 +49,10 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN mkdir -p /var/www/html/public/products/gallery \
     /var/www/html/public/car_images \
     /var/www/html/public/uploads/reviews \
-    /var/www/html/public/uploads/profiles && \
-    chown -R www-data:www-data /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads && \
-    chmod -R 775 /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads
+    /var/www/html/public/uploads/profiles \
+    /var/www/html/public/profiles && \
+    chown -R www-data:www-data /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads /var/www/html/public/profiles && \
+    chmod -R 775 /var/www/html/public/products /var/www/html/public/car_images /var/www/html/public/uploads /var/www/html/public/profiles
 
 # Change Apache document root to Laravel's public directory
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
