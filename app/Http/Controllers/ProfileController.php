@@ -166,7 +166,7 @@ class ProfileController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to upload photo: ' . $e->getMessage()
+                'message' => 'Failed to upload photo: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine()
             ], 500);
         }
     }

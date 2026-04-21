@@ -67,6 +67,9 @@ ENV PORT=80
 # Dynamically change the Apache port to $PORT, run migrations, then run Apache
 CMD sed -i "s/Listen 80/Listen ${PORT}/" /etc/apache2/ports.conf && \
     sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:${PORT}>/" /etc/apache2/sites-available/000-default.conf && \
+    php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan view:clear && \
     php artisan migrate --force && \
     php artisan db:seed --class=AdminSeeder --force && \
     apache2-foreground
