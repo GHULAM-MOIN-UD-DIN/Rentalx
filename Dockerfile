@@ -46,6 +46,7 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Create upload directories and set permissions
+# this is the 
 RUN mkdir -p /var/www/html/public/products/gallery \
     /var/www/html/public/car_images \
     /var/www/html/public/uploads/reviews \
