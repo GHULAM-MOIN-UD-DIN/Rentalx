@@ -88,8 +88,13 @@ class Profile extends Model
      */
     public function getProfilePhotoUrlAttribute(): string
     {
-        if ($this->profile_photo && file_exists(public_path('profiles/' . $this->profile_photo))) {
-            return asset('profiles/' . $this->profile_photo);
+        if ($this->profile_photo) {
+            if (\Illuminate\Support\Str::startsWith($this->profile_photo, ['http://', 'https://'])) {
+                return $this->profile_photo;
+            }
+            if (file_exists(public_path('profiles/' . $this->profile_photo))) {
+                return asset('profiles/' . $this->profile_photo);
+            }
         }
         
         // Default avatar using UI Avatars
@@ -102,8 +107,13 @@ class Profile extends Model
      */
     public function getCoverPhotoUrlAttribute(): string
     {
-        if ($this->cover_photo && file_exists(public_path('covers/' . $this->cover_photo))) {
-            return asset('covers/' . $this->cover_photo);
+        if ($this->cover_photo) {
+            if (\Illuminate\Support\Str::startsWith($this->cover_photo, ['http://', 'https://'])) {
+                return $this->cover_photo;
+            }
+            if (file_exists(public_path('covers/' . $this->cover_photo))) {
+                return asset('covers/' . $this->cover_photo);
+            }
         }
         
         // Default cover image

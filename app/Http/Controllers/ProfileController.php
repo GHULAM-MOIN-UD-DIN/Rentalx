@@ -143,12 +143,10 @@ class ProfileController extends Controller
                 }
             }
             
-            // Upload new photo
+            // Upload new photo to Cloudinary
             $file = $request->file('photo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = $type . '_' . time() . '_' . Str::random(10) . '.' . $extension;
-            
-            $file->move(public_path($folder), $filename);
+            $cloudinaryResponse = $file->storeOnCloudinary('rentalx/' . $folder);
+            $filename = $cloudinaryResponse->getSecurePath();
             
             if (!$profile->exists) {
                 $profile->user_id = $user->id;
@@ -160,7 +158,7 @@ class ProfileController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => ucfirst($type) . ' photo updated successfully!',
-                'photo_url' => asset($folder . '/' . $filename)
+                'photo_url' => $filename
             ]);
 
         } catch (\Exception $e) {
