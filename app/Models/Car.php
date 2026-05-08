@@ -21,9 +21,18 @@ class Car extends Model
     /* ===== ACCESSORS ===== */
     public function getImageUrlAttribute()
     {
-        if ($this->image && file_exists(public_path('car_images/' . $this->image))) {
+        if (!$this->image) {
+            return 'https://ui-avatars.com/api/?name=' . urlencode($this->brand . ' ' . $this->model) . '&background=ef4444&color=fff&size=200';
+        }
+
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        if (file_exists(public_path('car_images/' . $this->image))) {
             return asset('car_images/' . $this->image);
         }
+
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->brand . ' ' . $this->model) . '&background=ef4444&color=fff&size=200';
     }
 }

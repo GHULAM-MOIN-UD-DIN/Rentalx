@@ -154,9 +154,20 @@ class Product extends Model
 
     public function getImageUrlAttribute()
     {
-        if ($this->image && file_exists(public_path('products/' . $this->image))) {
+        if (!$this->image) {
+            return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=ef4444&color=fff&size=200';
+        }
+
+        // Cloudinary or external URL - return directly
+        if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
+            return $this->image;
+        }
+
+        // Local file
+        if (file_exists(public_path('products/' . $this->image))) {
             return asset('products/' . $this->image);
         }
+
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=ef4444&color=fff&size=200';
     }
 }
