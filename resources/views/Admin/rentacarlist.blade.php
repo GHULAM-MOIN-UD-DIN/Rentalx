@@ -755,8 +755,8 @@
         
         <!-- Car Image -->
         <div class="car-image">
-            @if($car->image && file_exists(public_path('car_images/' . $car->image)))
-                <img src="{{ asset('car_images/' . $car->image) }}" alt="{{ $car->brand }} {{ $car->model }}">
+            @if($car->image)
+                <img src="{{ img_url($car->image, 'car_images') }}" alt="{{ $car->brand }} {{ $car->model }}">
             @else
                 <div class="image-placeholder">
                     <i class="fa-solid fa-car-side"></i>

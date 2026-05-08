@@ -90,27 +90,19 @@ class ReviewController extends Controller
 
             $images = [];
             if ($request->hasFile('images')) {
-                $uploadPath = public_path('uploads/reviews');
-                
-                if (!File::isDirectory($uploadPath)) {
-                    File::makeDirectory($uploadPath, 0755, true, true);
-                }
-
                 $uploadedCount = 0;
                 foreach ($request->file('images') as $image) {
                     if ($uploadedCount >= 5) break;
                     
                     if ($image->isValid()) {
-                        $extension = strtolower($image->getClientOriginalExtension());
-                        $imageName = time() . '_' . uniqid() . '.' . $extension;
-                        $imageName = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $imageName);
-                        
                         try {
-                            $image->move($uploadPath, $imageName);
-                            $images[] = $imageName;
+                            $cloudinaryResponse = cloudinary()->upload($image->getRealPath(), [
+                                'folder' => 'rentalx/reviews'
+                            ]);
+                            $images[] = $cloudinaryResponse->getSecurePath();
                             $uploadedCount++;
                         } catch (\Exception $e) {
-                            Log::error('Image upload failed: ' . $e->getMessage());
+                            Log::error('Cloudinary image upload failed: ' . $e->getMessage());
                         }
                     }
                 }
@@ -386,14 +378,18 @@ class ReviewController extends Controller
                 $images = is_string($review->images) ? json_decode($review->images, true) : $review->images;
                 
                 if (is_array($images)) {
-                    $uploadPath = public_path('uploads/reviews');
                     foreach ($images as $image) {
                         if (empty($image)) continue;
                         
-                        $imagePath = $uploadPath . '/' . $image;
-                        if (File::exists($imagePath)) {
-                            File::delete($imagePath);
-                            Log::info('Deleted review image: ' . $imagePath);
+                        if (str_starts_with($image, 'http')) {
+                            try {
+                                $publicId = $this->extractCloudinaryPublicId($image);
+                                if ($publicId) {
+                                    cloudinary()->destroy($publicId);
+                                }
+                            } catch (\Exception $e) {
+                                Log::warning('Failed to delete review image from Cloudinary: ' . $e->getMessage());
+                            }
                         }
                     }
                 }
@@ -491,13 +487,18 @@ class ReviewController extends Controller
                                 $images = is_string($review->images) ? json_decode($review->images, true) : $review->images;
                                 
                                 if (is_array($images)) {
-                                    $uploadPath = public_path('uploads/reviews');
                                     foreach ($images as $image) {
                                         if (empty($image)) continue;
                                         
-                                        $imagePath = $uploadPath . '/' . $image;
-                                        if (File::exists($imagePath)) {
-                                            File::delete($imagePath);
+                                        if (str_starts_with($image, 'http')) {
+                                            try {
+                                                $publicId = $this->extractCloudinaryPublicId($image);
+                                                if ($publicId) {
+                                                    cloudinary()->destroy($publicId);
+                                                }
+                                            } catch (\Exception $e) {
+                                                Log::warning('Bulk delete Cloudinary image failed: ' . $e->getMessage());
+                                            }
                                         }
                                     }
                                 }
@@ -688,6 +689,20 @@ class ReviewController extends Controller
                 'success' => false,
                 'message' => 'Error processing request'
             ], 500);
+        }
+    }
+    /**
+     * Extract Cloudinary public_id from a full URL.
+     */
+    private function extractCloudinaryPublicId(string $url): ?string
+    {
+        try {
+            if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
+                return $matches[1];
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
         }
     }
 }

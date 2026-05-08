@@ -1023,7 +1023,7 @@ tr:hover .action-group {
                             <div class="product-info">
                                 <div class="product-image-wrapper">
                                     <div class="product-image-glow"></div>
-                                    <img src="{{ asset('products/'.$product->image) }}" 
+                                    <img src="{{ img_url($product->image, 'products') }}" 
                                          alt="{{ $product->name }}" 
                                          class="product-image">
                                 </div>

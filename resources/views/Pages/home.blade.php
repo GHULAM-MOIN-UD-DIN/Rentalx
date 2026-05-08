@@ -464,7 +464,7 @@
                         <div class="product-card-item bg-white/5 rounded-xl sm:rounded-2xl overflow-hidden hover:bg-white/10 transition-all duration-300 hover:scale-105">
                             <div class="product-img-wrapper aspect-square overflow-hidden">
                                 @if($product->image)
-                                    <img src="{{ asset('products/' . $product->image) }}" class="w-full h-full object-cover" alt="{{ $product->name }}">
+                                    <img src="{{ img_url($product->image, 'products') }}" class="w-full h-full object-cover" alt="{{ $product->name }}">
                                 @else
                                     <img src="https://via.placeholder.com/200x200?text=Product" class="w-full h-full object-cover" alt="Product">
                                 @endif

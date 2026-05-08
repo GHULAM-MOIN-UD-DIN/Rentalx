@@ -28,7 +28,9 @@
             <p>We are excited to announce that a brand new product has just arrived at our store!</p>
             
             <div class="product-card">
-                @if($product->image)
+                @if($product->image && str_starts_with($product->image, 'http'))
+                    <img src="{{ $product->image }}" alt="{{ $product->name }}" class="product-image">
+                @elseif($product->image)
                     <img src="{{ $message->embed(public_path('products/' . $product->image)) }}" alt="{{ $product->name }}" class="product-image">
                 @endif
                 <div class="product-name">{{ $product->name }}</div>

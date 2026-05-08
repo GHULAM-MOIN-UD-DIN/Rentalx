@@ -247,7 +247,7 @@
                         <!-- Car Details -->
                         <div class="mb-4">
                             @if(isset($car))
-                                <img src="{{ asset('car_images/'.$car->image) }}" alt="{{ $car->name }}" class="car-summary-img mb-3">
+                                <img src="{{ img_url($car->image, 'car_images') }}" alt="{{ $car->name }}" class="car-summary-img mb-3">
                                 <h4 class="font-bold text-lg">{{ $car->brand }} {{ $car->model }}</h4>
                                 <p class="text-sm text-gray-400">{{ $car->description ?? 'Premium vehicle' }}</p>
                                 

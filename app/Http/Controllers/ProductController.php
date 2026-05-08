@@ -51,17 +51,20 @@ class ProductController extends Controller
                 'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048'
             ]);
 
-            // Handle Main Image
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('products'), $imageName);
+            // Handle Main Image - Upload to Cloudinary
+            $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'rentalx/products'
+            ]);
+            $imageName = $cloudinaryResponse->getSecurePath();
 
-            // Handle Gallery Images
+            // Handle Gallery Images - Upload to Cloudinary
             $galleryImages = [];
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $index => $image) {
-                    $galleryName = time() . '_' . $index . '.' . $image->extension();
-                    $image->move(public_path('products/gallery'), $galleryName);
-                    $galleryImages[] = 'gallery/' . $galleryName;
+                    $galleryResponse = cloudinary()->upload($image->getRealPath(), [
+                        'folder' => 'rentalx/products/gallery'
+                    ]);
+                    $galleryImages[] = $galleryResponse->getSecurePath();
                 }
             }
 
@@ -172,29 +175,49 @@ class ProductController extends Controller
                 'status' => $request->stock > 0 ? 'active' : 'out_of_stock'
             ];
 
-            // Image Update Logic
+            // Image Update Logic - Upload to Cloudinary
             if ($request->hasFile('image')) {
-                if ($product->image && File::exists(public_path('products/' . $product->image))) {
-                    File::delete(public_path('products/' . $product->image));
+                // Delete old image from Cloudinary if it's a Cloudinary URL
+                if ($product->image && str_starts_with($product->image, 'http')) {
+                    try {
+                        $publicId = $this->extractCloudinaryPublicId($product->image);
+                        if ($publicId) {
+                            cloudinary()->destroy($publicId);
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to delete old Cloudinary image: ' . $e->getMessage());
+                    }
                 }
-                $imageName = time() . '.' . $request->image->extension();
-                $request->image->move(public_path('products'), $imageName);
-                $data['image'] = $imageName;
+
+                $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
+                    'folder' => 'rentalx/products'
+                ]);
+                $data['image'] = $cloudinaryResponse->getSecurePath();
             }
 
-            // Gallery Update Logic
+            // Gallery Update Logic - Upload to Cloudinary
             if ($request->hasFile('gallery_images')) {
-                // Delete old gallery
+                // Delete old gallery from Cloudinary
                 if ($product->gallery_images) {
                     foreach ($product->gallery_images as $oldImage) {
-                        File::delete(public_path('products/' . $oldImage));
+                        if (str_starts_with($oldImage, 'http')) {
+                            try {
+                                $publicId = $this->extractCloudinaryPublicId($oldImage);
+                                if ($publicId) {
+                                    cloudinary()->destroy($publicId);
+                                }
+                            } catch (\Exception $e) {
+                                Log::warning('Failed to delete old gallery image: ' . $e->getMessage());
+                            }
+                        }
                     }
                 }
                 $galleryImages = [];
                 foreach ($request->file('gallery_images') as $index => $image) {
-                    $galleryName = time() . '_' . $index . '.' . $image->extension();
-                    $image->move(public_path('products/gallery'), $galleryName);
-                    $galleryImages[] = 'gallery/' . $galleryName;
+                    $galleryResponse = cloudinary()->upload($image->getRealPath(), [
+                        'folder' => 'rentalx/products/gallery'
+                    ]);
+                    $galleryImages[] = $galleryResponse->getSecurePath();
                 }
                 $data['gallery_images'] = $galleryImages;
             }
@@ -215,15 +238,31 @@ class ProductController extends Controller
         try {
             $product = Product::findOrFail((int)$id);
 
-            // Delete Main Image
-            if ($product->image && File::exists(public_path('products/' . $product->image))) {
-                File::delete(public_path('products/' . $product->image));
+            // Delete Main Image from Cloudinary
+            if ($product->image && str_starts_with($product->image, 'http')) {
+                try {
+                    $publicId = $this->extractCloudinaryPublicId($product->image);
+                    if ($publicId) {
+                        cloudinary()->destroy($publicId);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to delete product image from Cloudinary: ' . $e->getMessage());
+                }
             }
 
-            // Delete Gallery Images
+            // Delete Gallery Images from Cloudinary
             if ($product->gallery_images) {
                 foreach ($product->gallery_images as $image) {
-                    File::delete(public_path('products/' . $image));
+                    if (str_starts_with($image, 'http')) {
+                        try {
+                            $publicId = $this->extractCloudinaryPublicId($image);
+                            if ($publicId) {
+                                cloudinary()->destroy($publicId);
+                            }
+                        } catch (\Exception $e) {
+                            Log::warning('Failed to delete gallery image from Cloudinary: ' . $e->getMessage());
+                        }
+                    }
                 }
             }
 
@@ -232,6 +271,23 @@ class ProductController extends Controller
             
         } catch (\Exception $e) {
             return back()->with('error', 'Error deleting product.');
+        }
+    }
+
+    /**
+     * Extract Cloudinary public_id from a full URL.
+     * Example: https://res.cloudinary.com/xxx/image/upload/v123/rentalx/products/abc.jpg
+     * Returns: rentalx/products/abc
+     */
+    private function extractCloudinaryPublicId(string $url): ?string
+    {
+        try {
+            if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
+                return $matches[1];
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
         }
     }
 }

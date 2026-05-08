@@ -11,8 +11,8 @@
         @foreach($cartItems as $item)
         <div class="premium-cart-item" id="cart-item-{{ $item->id }}">
             <div class="item-image">
-                @if($item->product && $item->product->image && file_exists(public_path('products/' . $item->product->image)))
-                    <img src="{{ asset('products/' . $item->product->image) }}" alt="">
+                @if($item->product && $item->product->image)
+                    <img src="{{ img_url($item->product->image, 'products') }}" alt="">
                 @else
                     <i class="fa-solid fa-box-open text-2xl text-gray-600"></i>
                 @endif

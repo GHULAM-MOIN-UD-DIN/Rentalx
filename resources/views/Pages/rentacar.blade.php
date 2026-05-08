@@ -90,7 +90,7 @@
             <div class="car-card" data-id="{{ $car->id }}" data-category="{{ $car->category ?? 'supercar' }}" data-price="{{ $car->price_per_day }}" data-hp="{{ $car->hp ?? 0 }}" data-rating="{{ $car->rating ?? 4.5 }}">
                 <div class="car-img-wrap" style="height:200px;">
                     @if($car->image)
-                        <img src="{{ asset('car_images/'.$car->image) }}" alt="{{ $car->brand }} {{ $car->model }}" style="height:200px; object-fit:cover; width:100%;" loading="lazy">
+                        <img src="{{ img_url($car->image, 'car_images') }}" alt="{{ $car->brand }} {{ $car->model }}" style="height:200px; object-fit:cover; width:100%;" loading="lazy">
                     @else
                         <div style="height:200px; background:linear-gradient(135deg,#333,#0a0a0a); display:flex; align-items:center; justify-content:center;">
                             <i class="fa-solid fa-car text-red-500/30 text-5xl"></i>

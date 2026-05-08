@@ -586,7 +586,7 @@ nav#mainNav {
                         <div class="item-flex">
                             <!-- Product Image -->
                             <div class="cart-item-image">
-                                <img src="{{ asset('products/' . $cart->product->image) }}" alt="{{ $cart->product->name }}">
+                                <img src="{{ img_url($cart->product->image, 'products') }}" alt="{{ $cart->product->name }}">
                             </div>
 
                             <!-- Product Details -->

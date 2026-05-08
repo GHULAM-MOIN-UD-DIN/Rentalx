@@ -873,7 +873,7 @@ body {
                             <div class="cart-review-item">
                                 <div class="flex items-center gap-4">
                                     <div class="item-image">
-                                        <img src="{{ asset('products/' . $cart->product->image) }}" alt="{{ $cart->product->name }}">
+                                        <img src="{{ img_url($cart->product->image, 'products') }}" alt="{{ $cart->product->name }}">
                                     </div>
                                     <div class="flex-1">
                                         <h6 class="item-name">{{ $cart->product->name }}</h6>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Car;
+use Illuminate\Support\Facades\Log;
 
 class RentacarController extends Controller
 {
@@ -46,8 +47,11 @@ class RentacarController extends Controller
         $imageName = null;
 
         if ($request->hasFile('image')) {
-            $imageName = time() . '_' . uniqid() . '.' . $request->image->extension();
-            $request->image->move(public_path('car_images'), $imageName);
+            // Upload to Cloudinary
+            $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'rentalx/car_images'
+            ]);
+            $imageName = $cloudinaryResponse->getSecurePath();
         }
 
         Car::create([
@@ -92,14 +96,23 @@ class RentacarController extends Controller
 
         // Handle image upload
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($car->image && file_exists(public_path('car_images/' . $car->image))) {
-                unlink(public_path('car_images/' . $car->image));
+            // Delete old image from Cloudinary if exists
+            if ($car->image && str_starts_with($car->image, 'http')) {
+                try {
+                    $publicId = $this->extractCloudinaryPublicId($car->image);
+                    if ($publicId) {
+                        cloudinary()->destroy($publicId);
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Failed to delete old car image: ' . $e->getMessage());
+                }
             }
             
-            $imageName = time() . '_' . uniqid() . '.' . $request->image->extension();
-            $request->image->move(public_path('car_images'), $imageName);
-            $car->image = $imageName;
+            // Upload new image to Cloudinary
+            $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'rentalx/car_images'
+            ]);
+            $car->image = $cloudinaryResponse->getSecurePath();
         }
 
         $car->update([
@@ -122,14 +135,36 @@ class RentacarController extends Controller
     {
         $car = Car::findOrFail($id);
         
-        // Delete image if exists
-        if ($car->image && file_exists(public_path('car_images/' . $car->image))) {
-            unlink(public_path('car_images/' . $car->image));
+        // Delete image from Cloudinary if exists
+        if ($car->image && str_starts_with($car->image, 'http')) {
+            try {
+                $publicId = $this->extractCloudinaryPublicId($car->image);
+                if ($publicId) {
+                    cloudinary()->destroy($publicId);
+                }
+            } catch (\Exception $e) {
+                Log::warning('Failed to delete car image from Cloudinary: ' . $e->getMessage());
+            }
         }
         
         $car->delete();
 
         return redirect()->route('admin.rentacar.index')
             ->with('success', 'Car Deleted Successfully');
+    }
+
+    /**
+     * Extract Cloudinary public_id from a full URL.
+     */
+    private function extractCloudinaryPublicId(string $url): ?string
+    {
+        try {
+            if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
+                return $matches[1];
+            }
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

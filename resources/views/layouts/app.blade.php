@@ -857,8 +857,8 @@
                         <div class="flex gap-1 my-2">
                             @foreach($order->items->take(3) as $item)
                             <div class="w-8 h-8 rounded border border-red-500/20 bg-gray-900 overflow-hidden">
-                                @if($item->product && $item->product->image && file_exists(public_path('products/'.$item->product->image)))
-                                    <img src="{{ asset('products/'.$item->product->image) }}" class="w-full h-full object-cover" alt="">
+                                @if($item->product && $item->product->image)
+                                    <img src="{{ img_url($item->product->image, 'products') }}" class="w-full h-full object-cover" alt="">
                                 @endif
                             </div>
                             @endforeach

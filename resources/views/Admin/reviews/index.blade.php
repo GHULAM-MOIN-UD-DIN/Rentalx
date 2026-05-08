@@ -1400,7 +1400,7 @@ tr:hover .user-avatar {
                             <td data-label="Product">
                                 <div class="product-info">
                                     @if($review->product && isset($review->product->image))
-                                        <img src="{{ asset('products/' . $review->product->image) }}" alt="" class="product-image">
+                                        <img src="{{ img_url($review->product->image, 'products') }}" alt="" class="product-image">
                                     @else
                                         <div class="product-image-placeholder">
                                             <i class="fa-regular fa-box"></i>
@@ -1630,8 +1630,8 @@ tr:hover .user-avatar {
                         <div class="review-image-grid">
                             @foreach($reviewImages as $image)
                                 @if($image)
-                                    <div class="review-image-item" onclick="window.open('{{ asset('uploads/reviews/' . $image) }}')">
-                                        <img src="{{ asset('uploads/reviews/' . $image) }}" alt="Review Image">
+                                    <div class="review-image-item" onclick="window.open('{{ img_url($image, 'uploads/reviews') }}')">
+                                        <img src="{{ img_url($image, 'uploads/reviews') }}" alt="Review Image">
                                     </div>
                                 @endif
                             @endforeach

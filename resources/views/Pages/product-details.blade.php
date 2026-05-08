@@ -1840,19 +1840,19 @@ textarea.form-control {
                     </span>
                 </div>
                 
-                <img id="mainProductImage" src="{{ asset('products/' . $product->image) }}" alt="{{ $product->name }}">
+                <img id="mainProductImage" src="{{ img_url($product->image, 'products') }}" alt="{{ $product->name }}">
             </div>
             
             <!-- Thumbnail Grid -->
             <div class="thumb-grid" id="thumbGrid">
-                <div class="thumb-item active" onclick="changeMainImage('{{ asset('products/' . $product->image) }}', this)">
-                    <img src="{{ asset('products/' . $product->image) }}" alt="thumb">
+                <div class="thumb-item active" onclick="changeMainImage('{{ img_url($product->image, 'products') }}', this)">
+                    <img src="{{ img_url($product->image, 'products') }}" alt="thumb">
                 </div>
                 
                 @if(is_array($product->gallery_images) && count($product->gallery_images) > 0)
                     @foreach($product->gallery_images as $index => $gimg)
-                        <div class="thumb-item" onclick="changeMainImage('{{ asset('products/' . $gimg) }}', this)">
-                            <img src="{{ asset('products/' . $gimg) }}" alt="thumb {{ $index + 1 }}">
+                        <div class="thumb-item" onclick="changeMainImage('{{ img_url($gimg, 'products') }}', this)">
+                            <img src="{{ img_url($gimg, 'products') }}" alt="thumb {{ $index + 1 }}">
                         </div>
                     @endforeach
                 @endif
@@ -2208,7 +2208,7 @@ textarea.form-control {
                                 @if(!empty($reviewImages) && is_array($reviewImages))
                                     <div class="review-gallery">
                                         @foreach($reviewImages as $img)
-                                            <img src="{{ asset('uploads/reviews/' . $img) }}" class="review-img" onclick="openLightbox(this.src)">
+                                            <img src="{{ img_url($img, 'uploads/reviews') }}" class="review-img" onclick="openLightbox(this.src)">
                                         @endforeach
                                     </div>
                                 @endif
@@ -2346,7 +2346,7 @@ textarea.form-control {
                                     HOT
                                 </span>
                             @endif
-                            <img src="{{ asset('products/' . ($related->image ?? 'default.jpg')) }}" alt="{{ $related->name }}">
+                            <img src="{{ img_url($related->image ?? 'default.jpg', 'products') }}" alt="{{ $related->name }}">
                         </div>
                         <div class="related-info">
                             <div class="related-brand">{{ strtoupper($related->brand ?? 'AUDI') }}</div>

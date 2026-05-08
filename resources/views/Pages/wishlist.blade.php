@@ -101,8 +101,8 @@
                             
                             <!-- Product Image -->
                             <div class="absolute inset-0 flex items-center justify-center p-6">
-                                @if($item->product->image && file_exists(public_path('products/' . $item->product->image)))
-                                    <img src="{{ asset('products/' . $item->product->image) }}" alt="{{ $item->product->name }}" 
+                                @if($item->product->image)
+                                    <img src="{{ img_url($item->product->image, 'products') }}" alt="{{ $item->product->name }}" 
                                          class="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-700">
                                 @else
                                     <i class="fa-solid fa-car-side text-7xl text-gray-700"></i>
@@ -271,7 +271,7 @@
                     <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden hover:border-red-500/50 transition">
                         <div class="h-40 bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center p-4">
                             @if($rec->image)
-                                <img src="{{ asset('products/' . $rec->image) }}" alt="" class="max-h-full max-w-full object-contain group-hover:scale-110 transition">
+                                <img src="{{ img_url($rec->image, 'products') }}" alt="" class="max-h-full max-w-full object-contain group-hover:scale-110 transition">
                             @else
                                 <i class="fa-solid fa-car-side text-4xl text-gray-700"></i>
                             @endif

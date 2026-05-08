@@ -1007,7 +1007,7 @@
                 <div class="gallery-preview">
                     @foreach($product->gallery_images as $image)
                     <div class="gallery-item">
-                        <img src="{{ asset('products/'.$image) }}" alt="Gallery">
+                        <img src="{{ img_url($image, 'products') }}" alt="Gallery">
                         <div class="gallery-item-overlay">
                             <i class="fa-regular fa-eye"></i>
                         </div>
@@ -1093,8 +1093,8 @@
                 Current Main Image
             </h3>
             <div class="current-image">
-                @if($product->image && file_exists(public_path('products/'.$product->image)))
-                    <img src="{{ asset('products/'.$product->image) }}" alt="{{ $product->name }}">
+                @if($product->image)
+                    <img src="{{ img_url($product->image, 'products') }}" alt="{{ $product->name }}">
                 @else
                     <div style="height: 16rem; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3);">
                         <i class="fa-regular fa-image fa-3x" style="color: var(--text-muted);"></i>
