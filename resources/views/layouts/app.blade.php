@@ -9,19 +9,25 @@
     
     <title>@yield('title', 'RENTALX') | elite automotive · fully loaded + responsive</title>
     
-    {{-- Tailwind CSS --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Preconnect to CDNs for faster loading --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     
-    {{-- GSAP --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    {{-- Tailwind CSS - async to not block render --}}
+    <script src="https://cdn.tailwindcss.com" defer></script>
     
-    {{-- Fonts & Icons --}}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800;14..32,900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    {{-- GSAP - defer loading --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     
-    {{-- SweetAlert --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- Fonts & Icons - optimized loading --}}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800;14..32,900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    
+    {{-- SweetAlert - defer --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     
     <style>
         * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
@@ -610,8 +616,8 @@
         <div class="mm-icon-strip">
             <button onclick="closeMobileMenu();openCartSidebar()" class="nav-icon" style="background:rgba(255,255,255,0.04);">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <span id="mobileCartBadge" class="badge {{ (\App\Models\Cart::where('user_id', Auth::id())->count() > 0) ? '' : 'hidden' }}">
-                    {{ \App\Models\Cart::where('user_id', Auth::id())->count() }}
+                <span id="mobileCartBadge" class="badge {{ ($cartCount > 0) ? '' : 'hidden' }}">
+                    {{ $cartCount }}
                 </span>
             </button>
             <button onclick="closeMobileMenu();openAppointmentSidebar()" class="nav-icon" style="background:rgba(255,255,255,0.04);">
@@ -628,13 +634,8 @@
                     @else
                         <i class="fa-regular fa-user"></i>
                     @endif
-                    @php 
-                        $notifCount = \App\Models\Order::where('user_id', Auth::id())->where('status','pending')->count()
-                            + \App\Models\Appointment::where('user_id', Auth::id())->where('status','pending')->count()
-                            + \App\Models\Notification::where('user_id', Auth::id())->whereNull('read_at')->count();
-                    @endphp
-                    @if($notifCount > 0)
-                        <span class="badge">{{ $notifCount }}</span>
+                    @if($notifBadgeCount > 0)
+                        <span class="badge">{{ $notifBadgeCount }}</span>
                     @endif
                 @else
                     <i class="fa-regular fa-user"></i>
@@ -684,7 +685,6 @@
                 <a href="{{ route('profile.orders') }}" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
                     <i class="fa-regular fa-clipboard w-5 text-red-400 text-center"></i>
                     <span class="font-medium text-sm">My Orders</span>
-                    @php $orderCount = \App\Models\Order::where('user_id', Auth::id())->count(); @endphp
                     @if($orderCount > 0)
                         <span class="ml-auto bg-red-600 text-xs px-2 py-0.5 rounded-full">{{ $orderCount }}</span>
                     @endif
@@ -692,7 +692,6 @@
                 <a href="{{ route('profile.appointments') }}" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
                     <i class="fa-regular fa-calendar w-5 text-red-400 text-center"></i>
                     <span class="font-medium text-sm">Appointments</span>
-                    @php $apptCount = \App\Models\Appointment::where('user_id', Auth::id())->count(); @endphp
                     @if($apptCount > 0)
                         <span class="ml-auto bg-blue-600 text-xs px-2 py-0.5 rounded-full">{{ $apptCount }}</span>
                     @endif
@@ -700,7 +699,6 @@
                 <a href="{{ route('profile.wishlist') }}" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
                     <i class="fa-regular fa-heart w-5 text-red-400 text-center"></i>
                     <span class="font-medium text-sm">Wishlist</span>
-                    @php $wishlistCount = \App\Models\Wishlist::where('user_id', Auth::id())->count(); @endphp
                     @if($wishlistCount > 0)
                         <span class="ml-auto bg-pink-600 text-xs px-2 py-0.5 rounded-full">{{ $wishlistCount }}</span>
                     @endif
@@ -708,7 +706,6 @@
                 <a href="/cart" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
                     <i class="fa-solid fa-cart-shopping w-5 text-red-400 text-center"></i>
                     <span class="font-medium text-sm">Cart</span>
-                    @php $cartCount = \App\Models\Cart::where('user_id', Auth::id())->count(); @endphp
                     <span id="sidebarCartBadge" class="ml-auto bg-green-600 text-xs px-2 py-0.5 rounded-full {{ $cartCount > 0 ? '' : 'hidden' }}">{{ $cartCount }}</span>
                 </a>
                 <a href="{{ route('chat.index') }}" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
@@ -718,7 +715,6 @@
                 <a href="{{ route('notifications.index') }}" class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition">
                     <i class="fa-regular fa-bell w-5 text-red-400 text-center"></i>
                     <span class="font-medium text-sm">Notifications</span>
-                    @php $unreadNotifs = \App\Models\Notification::where('user_id', Auth::id())->whereNull('read_at')->count(); @endphp
                     @if($unreadNotifs > 0)
                         <span class="ml-auto bg-red-600 text-xs px-2 py-0.5 rounded-full animate-pulse">{{ $unreadNotifs }}</span>
                     @endif
@@ -770,11 +766,8 @@
         <div id="cartSidebarContent" class="space-y-3">
             @include('partials.cart-sidebar-items')
         </div>
-        <div id="cartSidebarFooter" class="premium-footer {{ (\App\Models\Cart::where('user_id', Auth::id())->count() > 0) ? '' : 'hidden' }}">
+        <div id="cartSidebarFooter" class="premium-footer {{ ($cartCount > 0) ? '' : 'hidden' }}">
             @auth
-                @php
-                    $cartItems = \App\Models\Cart::with('product')->where('user_id', Auth::id())->latest()->take(3)->get();
-                @endphp
                 @if($cartItems->count() > 0)
                     <div class="total-row">
                         <span class="text-gray-400 text-sm">Subtotal:</span>
