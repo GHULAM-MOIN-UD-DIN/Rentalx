@@ -1003,7 +1003,7 @@
                 </div>
 
                 <!-- Current Gallery -->
-                @if($product->gallery_images && count($product->gallery_images) > 0)
+                @if(is_array($product->gallery_images) && count($product->gallery_images) > 0)
                 <div class="gallery-preview">
                     @foreach($product->gallery_images as $image)
                     <div class="gallery-item">

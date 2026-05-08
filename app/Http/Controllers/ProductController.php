@@ -197,26 +197,30 @@ class ProductController extends Controller
 
             // Image Update Logic - Upload to Cloudinary
             if ($request->hasFile('image')) {
-                // Delete old image from Cloudinary if it's a Cloudinary URL
-                if ($product->image && str_starts_with($product->image, 'http')) {
+                // Delete old image from Cloudinary (ignore errors)
+                if ($product->image && is_string($product->image) && str_starts_with($product->image, 'http')) {
                     try {
                         $publicId = $this->extractCloudinaryPublicId($product->image);
                         if ($publicId) {
                             cloudinary()->destroy($publicId);
                         }
                     } catch (\Exception $e) {
-                        Log::warning('Failed to delete old Cloudinary image: ' . $e->getMessage());
+                        // Ignore delete errors
                     }
                 }
 
-                $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
-                    'folder' => 'rentalx/products'
-                ]);
-                
-                if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
-                    $data['image'] = $cloudinaryResponse->getSecurePath();
-                } else {
-                    Log::error('Cloudinary upload failed for main image in update');
+                try {
+                    $uploadedFile = $request->file('image');
+                    $result = cloudinary()->upload($uploadedFile->getRealPath(), [
+                        'folder' => 'rentalx/products'
+                    ]);
+                    $secureUrl = $result->getSecurePath();
+                    if ($secureUrl) {
+                        $data['image'] = $secureUrl;
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Cloudinary main image upload error: ' . $e->getMessage());
+                    return back()->with('error', 'Image upload failed: ' . $e->getMessage())->withInput();
                 }
             }
 
