@@ -41,7 +41,7 @@ class AuthController extends Controller
                 try {
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
-                    // Log error if mail fails
+                    \Log::error('OTP Mail Error (admin login): ' . $e->getMessage());
                 }
 
                 session(['temp_user_id' => $user->id, 'otp_type' => 'login']);
@@ -126,7 +126,12 @@ public function verifyOtp(Request $req)
         $otp = rand(100000,999999);
         $user->update(['otp'=>$otp,'otp_expire'=>now()->addMinutes(5)]);
 
-        Mail::to($user->email)->send(new OtpMail($otp));
+        try {
+            Mail::to($user->email)->send(new OtpMail($otp));
+        } catch (\Exception $e) {
+            \Log::error('OTP Mail Error (forgot password): ' . $e->getMessage());
+            return back()->with('error', 'Failed to send OTP email. Please try again.');
+        }
 
         session(['reset_user'=>$user->id,'otp_type'=>'forgot']);
         return redirect("/verify-otp");
