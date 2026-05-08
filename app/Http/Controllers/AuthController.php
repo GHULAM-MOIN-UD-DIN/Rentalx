@@ -35,7 +35,7 @@ class AuthController extends Controller
                 $otp = rand(100000,999999);
                 $user->update([
                     'otp'=>$otp,
-                    'otp_expire'=>now()->addMinutes(5)
+                    'otp_expire'=>now()->addMinutes(15)
                 ]);
                 
                 try {
@@ -143,7 +143,7 @@ public function verifyOtp(Request $req)
         if(!$user) return back()->with("error","Email not registered");
 
         $otp = rand(100000,999999);
-        $user->update(['otp'=>$otp,'otp_expire'=>now()->addMinutes(5)]);
+        $user->update(['otp'=>$otp,'otp_expire'=>now()->addMinutes(15)]);
 
         try {
             $html = view('emails.otp', ['otp' => $otp])->render();

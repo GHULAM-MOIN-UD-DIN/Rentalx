@@ -116,18 +116,21 @@ class ProductController extends Controller
                     'type' => 'product'
                 ]);
 
-                // Email via Brevo HTTP API (not SMTP - port 587 blocked on Render)
-                try {
-                    $emailHtml = view('emails.new-product-api', ['product' => $product])->render();
-                    send_brevo_email(
-                        $user->email,
-                        $user->name ?? 'Customer',
-                        'New Product Launched: ' . $product->name,
-                        $emailHtml
-                    );
-                } catch (\Exception $e) {
-                    Log::warning("Brevo email to {$user->email} failed: " . $e->getMessage());
-                }
+            /* 
+            // Commented out to save Brevo Daily Quota (300 emails)
+            // Email via Brevo HTTP API (not SMTP - port 587 blocked on Render)
+            try {
+                $emailHtml = view('emails.new-product-api', ['product' => $product])->render();
+                send_brevo_email(
+                    $user->email,
+                    $user->name ?? 'Customer',
+                    'New Product Launched: ' . $product->name,
+                    $emailHtml
+                );
+            } catch (\Exception $e) {
+                Log::warning("Brevo email to {$user->email} failed: " . $e->getMessage());
+            }
+            */
             }
 
             return redirect()->route("admin.products.index")->with("success", "Product Added Successfully");
