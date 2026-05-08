@@ -51,30 +51,20 @@ class ProductController extends Controller
                 'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:10240'
             ]);
 
-            // Handle Main Image - Upload to Cloudinary
-            $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'rentalx/products'
-            ]);
-            $imageName = $cloudinaryResponse ? $cloudinaryResponse->getSecurePath() : null;
+            // Handle Main Image - Upload to Cloudinary (direct API, no SDK)
+            $imageName = upload_to_cloudinary($request->file('image')->getRealPath(), 'rentalx/products');
             
             if (!$imageName) {
-                return back()->with('error', 'Failed to upload main image to Cloudinary.')->withInput();
+                return back()->with('error', 'Failed to upload image to Cloudinary. Check logs.')->withInput();
             }
 
-            // Handle Gallery Images - Upload to Cloudinary
+            // Handle Gallery Images
             $galleryImages = [];
             if ($request->hasFile('gallery_images')) {
-                foreach ($request->file('gallery_images') as $index => $image) {
-                    try {
-                        $galleryResponse = cloudinary()->upload($image->getRealPath(), [
-                            'folder' => 'rentalx/products/gallery'
-                        ]);
-                        if ($galleryResponse && $galleryResponse->getSecurePath()) {
-                            $galleryImages[] = $galleryResponse->getSecurePath();
-                        }
-                    } catch (\Exception $e) {
-                        Log::warning("Gallery image {$index} upload failed: " . $e->getMessage());
-                        // Continue with other images instead of failing completely
+                foreach ($request->file('gallery_images') as $image) {
+                    $url = upload_to_cloudinary($image->getRealPath(), 'rentalx/products/gallery');
+                    if ($url) {
+                        $galleryImages[] = $url;
                     }
                 }
             }
@@ -195,70 +185,25 @@ class ProductController extends Controller
                 'status' => $request->stock > 0 ? 'active' : 'out_of_stock'
             ];
 
-            // Image Update Logic - Upload to Cloudinary
+            // Image Update - Upload to Cloudinary (direct API)
             if ($request->hasFile('image')) {
-                // Delete old image from Cloudinary (ignore errors)
-                if ($product->image && is_string($product->image) && str_starts_with($product->image, 'http')) {
-                    try {
-                        $publicId = $this->extractCloudinaryPublicId($product->image);
-                        if ($publicId) {
-                            cloudinary()->destroy($publicId);
-                        }
-                    } catch (\Exception $e) {
-                        // Ignore delete errors
-                    }
-                }
-
-                try {
-                    $uploadedFile = $request->file('image');
-                    $result = cloudinary()->upload($uploadedFile->getRealPath(), [
-                        'folder' => 'rentalx/products'
-                    ]);
-                    $secureUrl = $result->getSecurePath();
-                    if ($secureUrl) {
-                        $data['image'] = $secureUrl;
-                    }
-                } catch (\Exception $e) {
-                    Log::error('Cloudinary main image upload error: ' . $e->getMessage());
-                    return back()->with('error', 'Image upload failed: ' . $e->getMessage())->withInput();
+                $newImageUrl = upload_to_cloudinary($request->file('image')->getRealPath(), 'rentalx/products');
+                if ($newImageUrl) {
+                    $data['image'] = $newImageUrl;
+                } else {
+                    return back()->with('error', 'Image upload failed. Check Render logs.')->withInput();
                 }
             }
 
-            // Gallery Update Logic - Upload to Cloudinary
+            // Gallery Update - Upload to Cloudinary (direct API)
             if ($request->hasFile('gallery_images')) {
-                // Delete old gallery from Cloudinary
-                if ($product->gallery_images && is_array($product->gallery_images)) {
-                    foreach ($product->gallery_images as $oldImage) {
-                        if (is_string($oldImage) && str_starts_with($oldImage, 'http')) {
-                            try {
-                                $publicId = $this->extractCloudinaryPublicId($oldImage);
-                                if ($publicId) {
-                                    cloudinary()->destroy($publicId);
-                                }
-                            } catch (\Exception $e) {
-                                Log::warning('Failed to delete old gallery image: ' . $e->getMessage());
-                            }
-                        }
-                    }
-                }
-                
                 $galleryImages = [];
-                $files = $request->file('gallery_images');
-                if (is_array($files)) {
-                    foreach ($files as $index => $image) {
-                        try {
-                            $galleryResponse = cloudinary()->upload($image->getRealPath(), [
-                                'folder' => 'rentalx/products/gallery'
-                            ]);
-                            if ($galleryResponse && $galleryResponse->getSecurePath()) {
-                                $galleryImages[] = $galleryResponse->getSecurePath();
-                            }
-                        } catch (\Exception $e) {
-                            Log::warning("Gallery image update failed at index $index: " . $e->getMessage());
-                        }
+                foreach ($request->file('gallery_images') as $image) {
+                    $url = upload_to_cloudinary($image->getRealPath(), 'rentalx/products/gallery');
+                    if ($url) {
+                        $galleryImages[] = $url;
                     }
                 }
-                
                 if (!empty($galleryImages)) {
                     $data['gallery_images'] = $galleryImages;
                 }

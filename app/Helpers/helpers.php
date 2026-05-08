@@ -86,3 +86,72 @@ if (!function_exists('send_brevo_email')) {
         return true;
     }
 }
+
+if (!function_exists('upload_to_cloudinary')) {
+    /**
+     * Upload image to Cloudinary via REST API (bypasses SDK bugs).
+     * 
+     * @param string $filePath Absolute path to the file
+     * @param string $folder Cloudinary folder name
+     * @return string|null Secure URL of uploaded image, or null on failure
+     */
+    function upload_to_cloudinary(string $filePath, string $folder = 'rentalx'): ?string
+    {
+        $cloudUrl = env('CLOUDINARY_URL');
+        
+        if (empty($cloudUrl)) {
+            \Log::error('CLOUDINARY_URL not set');
+            return null;
+        }
+
+        // Parse cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+        if (!preg_match('/cloudinary:\/\/(\d+):([^@]+)@(.+)/', $cloudUrl, $parts)) {
+            \Log::error('Invalid CLOUDINARY_URL format');
+            return null;
+        }
+
+        $apiKey = $parts[1];
+        $apiSecret = $parts[2];
+        $cloudName = $parts[3];
+        $timestamp = time();
+
+        // Build signature
+        $signStr = "folder={$folder}&timestamp={$timestamp}{$apiSecret}";
+        $signature = sha1($signStr);
+
+        // Upload via cURL
+        $ch = curl_init("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload");
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_POSTFIELDS => [
+                'file' => new \CURLFile($filePath),
+                'api_key' => $apiKey,
+                'timestamp' => $timestamp,
+                'signature' => $signature,
+                'folder' => $folder,
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) {
+            \Log::error("Cloudinary cURL error: {$error}");
+            return null;
+        }
+
+        $result = json_decode($response, true);
+
+        if ($httpCode >= 400 || !isset($result['secure_url'])) {
+            $msg = $result['error']['message'] ?? $response;
+            \Log::error("Cloudinary upload error ({$httpCode}): {$msg}");
+            return null;
+        }
+
+        return $result['secure_url'];
+    }
+}

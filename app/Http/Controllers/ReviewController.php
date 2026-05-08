@@ -95,16 +95,10 @@ class ReviewController extends Controller
                     if ($uploadedCount >= 5) break;
                     
                     if ($image->isValid()) {
-                        try {
-                            $cloudinaryResponse = cloudinary()->upload($image->getRealPath(), [
-                                'folder' => 'rentalx/reviews'
-                            ]);
-                            if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
-                                $images[] = $cloudinaryResponse->getSecurePath();
-                                $uploadedCount++;
-                            }
-                        } catch (\Exception $e) {
-                            Log::error('Cloudinary image upload failed: ' . $e->getMessage());
+                        $url = upload_to_cloudinary($image->getRealPath(), 'rentalx/reviews');
+                        if ($url) {
+                            $images[] = $url;
+                            $uploadedCount++;
                         }
                     }
                 }

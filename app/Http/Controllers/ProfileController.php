@@ -143,12 +143,13 @@ class ProfileController extends Controller
                 }
             }
             
-            // Upload new photo to Cloudinary
+            // Upload new photo to Cloudinary (direct API)
             $file = $request->file('photo');
-            $cloudinaryResponse = cloudinary()->upload($file->getRealPath(), [
-                'folder' => 'rentalx/' . $folder
-            ]);
-            $filename = $cloudinaryResponse->getSecurePath();
+            $filename = upload_to_cloudinary($file->getRealPath(), 'rentalx/' . $folder);
+            
+            if (!$filename) {
+                return response()->json(['success' => false, 'message' => 'Upload failed'], 500);
+            }
             
             if (!$profile->exists) {
                 $profile->user_id = $user->id;
