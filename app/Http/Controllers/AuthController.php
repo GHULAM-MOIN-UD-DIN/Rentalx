@@ -38,6 +38,9 @@ class AuthController extends Controller
                     'otp_expire'=>now()->addMinutes(15)
                 ]);
                 
+                // Debug: Print OTP to Render logs so you can see it if email is delayed
+                error_log("DEBUG: ADMIN LOGIN OTP IS -> " . $otp);
+                
                 try {
                     $html = view('emails.otp', ['otp' => $otp])->render();
                     send_brevo_email($user->email, $user->name, 'Your OTP Verification Code', $html);
