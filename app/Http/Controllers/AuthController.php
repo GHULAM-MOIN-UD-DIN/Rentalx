@@ -39,7 +39,8 @@ class AuthController extends Controller
                 ]);
                 
                 try {
-                    Mail::to($user->email)->send(new OtpMail($otp));
+                    $html = view('emails.otp', ['otp' => $otp])->render();
+                    send_brevo_email($user->email, $user->name, 'Your OTP Verification Code', $html);
                 } catch (\Exception $e) {
                     \Log::error('OTP Mail Error (admin login): ' . $e->getMessage());
                     error_log('OTP MAIL ERROR: ' . $e->getMessage());
@@ -130,10 +131,12 @@ public function verifyOtp(Request $req)
         $user->update(['otp'=>$otp,'otp_expire'=>now()->addMinutes(5)]);
 
         try {
-            Mail::to($user->email)->send(new OtpMail($otp));
+            $html = view('emails.otp', ['otp' => $otp])->render();
+            send_brevo_email($user->email, $user->name ?? 'User', 'Your OTP Verification Code', $html);
         } catch (\Exception $e) {
             \Log::error('OTP Mail Error (forgot password): ' . $e->getMessage());
-            return back()->with('error', 'Failed to send OTP email. Please try again.');
+            error_log('OTP MAIL ERROR: ' . $e->getMessage());
+            return back()->with('error', 'Mail Error: ' . $e->getMessage());
         }
 
         session(['reset_user'=>$user->id,'otp_type'=>'forgot']);
