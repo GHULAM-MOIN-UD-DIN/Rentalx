@@ -67,6 +67,15 @@ RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini && \
     echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini
 
 # ═══════════════════════════════════════
+# PHP Upload & Memory Limits
+# ═══════════════════════════════════════
+RUN echo "upload_max_filesize=20M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "post_max_size=50M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "memory_limit=256M" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_execution_time=120" >> /usr/local/etc/php/conf.d/uploads.ini && \
+    echo "max_file_uploads=20" >> /usr/local/etc/php/conf.d/uploads.ini
+
+# ═══════════════════════════════════════
 # PERFORMANCE: Apache Compression & Caching
 # ═══════════════════════════════════════
 RUN echo '<IfModule mod_deflate.c>\n\

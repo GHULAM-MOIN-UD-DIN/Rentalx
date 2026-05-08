@@ -39,7 +39,7 @@ class RentacarController extends Controller
             'horsepower' => 'nullable|integer|min:0',
             'acceleration' => 'nullable|string|max:50',
             'top_speed' => 'nullable|string|max:50',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'description' => 'nullable|string',
             'is_available' => 'nullable|in:0,1'
         ]);
@@ -89,7 +89,7 @@ class RentacarController extends Controller
             'horsepower' => 'nullable|integer|min:0',
             'acceleration' => 'nullable|string|max:50',
             'top_speed' => 'nullable|string|max:50',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
             'description' => 'nullable|string',
             'is_available' => 'nullable|in:0,1'
         ]);

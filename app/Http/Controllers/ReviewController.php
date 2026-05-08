@@ -36,7 +36,7 @@ class ReviewController extends Controller
                 'pros.*' => 'nullable|string|max:100|regex:/^[\pL\pN\s\-\_\.]+$/u',
                 'cons' => 'nullable|array|max:5',
                 'cons.*' => 'nullable|string|max:100|regex:/^[\pL\pN\s\-\_\.]+$/u',
-                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:10240'
             ], [
                 'title.regex' => 'Title contains invalid characters',
                 'comment.regex' => 'Review contains invalid characters',

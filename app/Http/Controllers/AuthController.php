@@ -138,7 +138,7 @@ public function verifyOtp(Request $req)
             error_log('OTP MAIL ERROR: ' . $e->getMessage());
             return back()->with('error', 'Mail Error: ' . $e->getMessage());
         }
-
+ 
         session(['reset_user'=>$user->id,'otp_type'=>'forgot']);
         return redirect("/verify-otp");
     }

@@ -47,8 +47,8 @@ class ProductController extends Controller
                 'meta_title' => 'nullable|string|max:200',
                 'meta_description' => 'nullable|string|max:500',
                 'meta_keywords' => 'nullable|string|max:500',
-                'image' => 'required|image|mimes:jpg,png,jpeg|max:2048',
-                'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048'
+                'image' => 'required|image|mimes:jpg,png,jpeg,webp|max:10240',
+                'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:10240'
             ]);
 
             // Handle Main Image - Upload to Cloudinary
@@ -151,8 +151,8 @@ class ProductController extends Controller
                 'meta_title' => 'nullable|string|max:200',
                 'meta_description' => 'nullable|string|max:500',
                 'meta_keywords' => 'nullable|string|max:500',
-                'image' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-                'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg|max:2048'
+                'image' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:10240',
+                'gallery_images.*' => 'nullable|image|mimes:jpg,png,jpeg,webp|max:10240'
             ]);
 
             $data = [
