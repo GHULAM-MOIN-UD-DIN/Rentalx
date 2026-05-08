@@ -42,6 +42,9 @@ class AuthController extends Controller
                     Mail::to($user->email)->send(new OtpMail($otp));
                 } catch (\Exception $e) {
                     \Log::error('OTP Mail Error (admin login): ' . $e->getMessage());
+                    error_log('OTP MAIL ERROR: ' . $e->getMessage());
+                    session(['temp_user_id' => $user->id, 'otp_type' => 'login']);
+                    return redirect("/verify-otp")->with("error", "Mail Error: " . $e->getMessage());
                 }
 
                 session(['temp_user_id' => $user->id, 'otp_type' => 'login']);
