@@ -75,29 +75,44 @@ public function verifyOtp(Request $req)
         $user = Auth::user();
     }
     
-    if(!$user) return redirect("/login")->with("error","Session expired or user not found");
+    if (!$user) {
+        \Log::warning("OTP Verify: User not found in session. Type: $type");
+        return redirect("/login")->with("error", "Session expired or user not found");
+    }
 
-    if($user->otp == $req->otp && $user->otp_expire > now())
-    {
-        $user->update(['otp'=>null,'otp_expire'=>null]);
+    $now = now();
+    $isMatch = ((string)$user->otp === (string)$req->otp);
+    $isExpired = ($user->otp_expire < $now);
 
-        if($type == "login") {
-            Auth::login($user); // Finally log them in
-            session()->forget('temp_user_id');
+    if ($isMatch && !$isExpired) {
+        $user->update(['otp' => null, 'otp_expire' => null]);
+
+        if ($type == "login") {
+            Auth::login($user);
+            session()->forget(['temp_user_id', 'otp_type']);
             
-            if($user->role == "admin") 
+            if ($user->role == "admin") 
                 return redirect("/admin/dashboard");
             return redirect("/");
         }
 
-        if($type == "forgot") {
-            return redirect("/reset-password")->with("success","OTP verified. Please set new password.");
+        if ($type == "forgot") {
+            return redirect("/reset-password")->with("success", "OTP verified. Please set new password.");
         }
 
         return redirect("/reset-password");
     }
 
-    return back()->with("error","Invalid or Expired OTP");
+    // If we are here, it failed. Determine why.
+    if (!$isMatch) {
+        return back()->with("error", "Invalid OTP code. Please check your email again.");
+    }
+    
+    if ($isExpired) {
+        return back()->with("error", "OTP has expired (valid for 5 mins). Please click 'Resend OTP'.");
+    }
+
+    return back()->with("error", "Verification failed. Please try again.");
 }
 
     /* ================= SIGNUP ================= */
