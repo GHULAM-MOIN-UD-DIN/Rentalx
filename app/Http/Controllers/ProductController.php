@@ -55,16 +55,27 @@ class ProductController extends Controller
             $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'rentalx/products'
             ]);
-            $imageName = $cloudinaryResponse->getSecurePath();
+            $imageName = $cloudinaryResponse ? $cloudinaryResponse->getSecurePath() : null;
+            
+            if (!$imageName) {
+                return back()->with('error', 'Failed to upload main image to Cloudinary.')->withInput();
+            }
 
             // Handle Gallery Images - Upload to Cloudinary
             $galleryImages = [];
             if ($request->hasFile('gallery_images')) {
                 foreach ($request->file('gallery_images') as $index => $image) {
-                    $galleryResponse = cloudinary()->upload($image->getRealPath(), [
-                        'folder' => 'rentalx/products/gallery'
-                    ]);
-                    $galleryImages[] = $galleryResponse->getSecurePath();
+                    try {
+                        $galleryResponse = cloudinary()->upload($image->getRealPath(), [
+                            'folder' => 'rentalx/products/gallery'
+                        ]);
+                        if ($galleryResponse && $galleryResponse->getSecurePath()) {
+                            $galleryImages[] = $galleryResponse->getSecurePath();
+                        }
+                    } catch (\Exception $e) {
+                        Log::warning("Gallery image {$index} upload failed: " . $e->getMessage());
+                        // Continue with other images instead of failing completely
+                    }
                 }
             }
 
@@ -93,10 +104,9 @@ class ProductController extends Controller
                 'reviews_count' => 0
             ]);
 
-            // Create Notification and Send Email to all users
+            // Create Database Notifications only (no SMTP - blocked on Render)
             $users = User::all();
             foreach ($users as $user) {
-                // Custom Database Notification
                 Notification::create([
                     'user_id' => $user->id,
                     'title' => 'New Product Launched!',
@@ -104,13 +114,6 @@ class ProductController extends Controller
                     'link' => route('product.details', $product->id),
                     'type' => 'product'
                 ]);
-
-                // Email Notification
-                try {
-                    $user->notify(new NewProductNotification($product));
-                } catch (\Exception $e) {
-                    Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
-                }
             }
 
             return redirect()->route("admin.products.index")->with("success", "Product Added Successfully");
