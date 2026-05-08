@@ -99,8 +99,10 @@ class ReviewController extends Controller
                             $cloudinaryResponse = cloudinary()->upload($image->getRealPath(), [
                                 'folder' => 'rentalx/reviews'
                             ]);
-                            $images[] = $cloudinaryResponse->getSecurePath();
-                            $uploadedCount++;
+                            if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
+                                $images[] = $cloudinaryResponse->getSecurePath();
+                                $uploadedCount++;
+                            }
                         } catch (\Exception $e) {
                             Log::error('Cloudinary image upload failed: ' . $e->getMessage());
                         }
@@ -697,8 +699,9 @@ class ReviewController extends Controller
     private function extractCloudinaryPublicId(string $url): ?string
     {
         try {
+            $matches = [];
             if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
-                return $matches[1];
+                return isset($matches[1]) ? $matches[1] : null;
             }
             return null;
         } catch (\Exception $e) {

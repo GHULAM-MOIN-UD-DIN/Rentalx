@@ -209,15 +209,20 @@ class ProductController extends Controller
                 $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
                     'folder' => 'rentalx/products'
                 ]);
-                $data['image'] = $cloudinaryResponse->getSecurePath();
+                
+                if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
+                    $data['image'] = $cloudinaryResponse->getSecurePath();
+                } else {
+                    Log::error('Cloudinary upload failed for main image in update');
+                }
             }
 
             // Gallery Update Logic - Upload to Cloudinary
             if ($request->hasFile('gallery_images')) {
                 // Delete old gallery from Cloudinary
-                if ($product->gallery_images) {
+                if ($product->gallery_images && is_array($product->gallery_images)) {
                     foreach ($product->gallery_images as $oldImage) {
-                        if (str_starts_with($oldImage, 'http')) {
+                        if (is_string($oldImage) && str_starts_with($oldImage, 'http')) {
                             try {
                                 $publicId = $this->extractCloudinaryPublicId($oldImage);
                                 if ($publicId) {
@@ -229,14 +234,27 @@ class ProductController extends Controller
                         }
                     }
                 }
+                
                 $galleryImages = [];
-                foreach ($request->file('gallery_images') as $index => $image) {
-                    $galleryResponse = cloudinary()->upload($image->getRealPath(), [
-                        'folder' => 'rentalx/products/gallery'
-                    ]);
-                    $galleryImages[] = $galleryResponse->getSecurePath();
+                $files = $request->file('gallery_images');
+                if (is_array($files)) {
+                    foreach ($files as $index => $image) {
+                        try {
+                            $galleryResponse = cloudinary()->upload($image->getRealPath(), [
+                                'folder' => 'rentalx/products/gallery'
+                            ]);
+                            if ($galleryResponse && $galleryResponse->getSecurePath()) {
+                                $galleryImages[] = $galleryResponse->getSecurePath();
+                            }
+                        } catch (\Exception $e) {
+                            Log::warning("Gallery image update failed at index $index: " . $e->getMessage());
+                        }
+                    }
                 }
-                $data['gallery_images'] = $galleryImages;
+                
+                if (!empty($galleryImages)) {
+                    $data['gallery_images'] = $galleryImages;
+                }
             }
 
             $product->update($data);
@@ -299,8 +317,9 @@ class ProductController extends Controller
     private function extractCloudinaryPublicId(string $url): ?string
     {
         try {
+            $matches = [];
             if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
-                return $matches[1];
+                return isset($matches[1]) ? $matches[1] : null;
             }
             return null;
         } catch (\Exception $e) {

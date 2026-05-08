@@ -51,7 +51,9 @@ class RentacarController extends Controller
             $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'rentalx/car_images'
             ]);
-            $imageName = $cloudinaryResponse->getSecurePath();
+            if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
+                $imageName = $cloudinaryResponse->getSecurePath();
+            }
         }
 
         Car::create([
@@ -112,7 +114,9 @@ class RentacarController extends Controller
             $cloudinaryResponse = cloudinary()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'rentalx/car_images'
             ]);
-            $car->image = $cloudinaryResponse->getSecurePath();
+            if ($cloudinaryResponse && $cloudinaryResponse->getSecurePath()) {
+                $car->image = $cloudinaryResponse->getSecurePath();
+            }
         }
 
         $car->update([
@@ -159,8 +163,9 @@ class RentacarController extends Controller
     private function extractCloudinaryPublicId(string $url): ?string
     {
         try {
+            $matches = [];
             if (preg_match('/\/upload\/v\d+\/(.+)\.[a-zA-Z]+$/', $url, $matches)) {
-                return $matches[1];
+                return isset($matches[1]) ? $matches[1] : null;
             }
             return null;
         } catch (\Exception $e) {
