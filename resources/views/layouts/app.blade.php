@@ -1060,8 +1060,6 @@
     {{-- SCRIPTS --}}
     <script>
     (function () {
-        gsap.registerPlugin(ScrollTrigger);
-
         /* ── Nav scroll ── */
         const nav = document.getElementById('mainNav');
         window.addEventListener('scroll', () => {
@@ -1141,13 +1139,16 @@
 
         /* ── GSAP Animations ── */
         window.addEventListener('load', () => {
-            gsap.from('nav', { y: -40, opacity: 0, duration: 1.1, clearProps: 'all' });
-            const footerEls = document.querySelectorAll('.footerAnim');
-            if (footerEls.length) {
-                gsap.from(footerEls, {
-                    scrollTrigger: { trigger: footerEls[0], start: 'top 85%' },
-                    y: 30, opacity: 0, duration: 0.8, stagger: 0.1, clearProps: 'all'
-                });
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+                gsap.from('nav', { y: -40, opacity: 0, duration: 1.1, clearProps: 'all' });
+                const footerEls = document.querySelectorAll('.footerAnim');
+                if (footerEls.length) {
+                    gsap.from(footerEls, {
+                        scrollTrigger: { trigger: footerEls[0], start: 'top 85%' },
+                        y: 30, opacity: 0, duration: 0.8, stagger: 0.1, clearProps: 'all'
+                    });
+                }
             }
         });
         /* Fallback visibility */

@@ -665,12 +665,7 @@
     .duration-3000 { transition-duration: 3000ms; }
 </style>
 
-<!-- Scripts -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,800;14..32,900&display=swap" rel="stylesheet">
-{{-- Font Awesome already loaded in layouts/app.blade.php (v6.5.1) --}}
+<!-- Scripts already loaded in layouts/app.blade.php -->
 
 <script>
 // Add to Cart AJAX
