@@ -17,5 +17,7 @@ class AdminSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
+
+        $this->call(ProductSeeder::class);
     }
 }
