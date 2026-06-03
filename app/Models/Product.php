@@ -77,13 +77,13 @@ class Product extends Model
             $this->stock -= $quantity;
             $this->sold_count += $quantity;
             $this->save();
-            
+
             // Update status if out of stock
             if ($this->stock == 0) {
                 $this->status = 'out_of_stock';
                 $this->save();
             }
-            
+
             return true;
         }
         return false;
@@ -148,8 +148,8 @@ class Product extends Model
     public function scopeSearch($query, $term)
     {
         return $query->where('name', 'LIKE', "%{$term}%")
-                     ->orWhere('description', 'LIKE', "%{$term}%")
-                     ->orWhere('category', 'LIKE', "%{$term}%");
+            ->orWhere('description', 'LIKE', "%{$term}%")
+            ->orWhere('category', 'LIKE', "%{$term}%");
     }
 
     public function getImageUrlAttribute()
