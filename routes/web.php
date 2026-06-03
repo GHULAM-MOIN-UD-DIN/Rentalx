@@ -218,6 +218,26 @@ Route::prefix('contacts')->name('contacts.')->group(function () {
 });
 
 /* ===============================
+    TEMPORARY SEED ROUTE (Remove after use)
+================================ */
+Route::get('/seed-products-xyz123', function () {
+    try {
+        $seeder = new \Database\Seeders\ProductSeeder();
+        $seeder->run();
+        return response()->json([
+            'success' => true,
+            'message' => '6 products successfully added!',
+            'products' => \App\Models\Product::select('id', 'name', 'price', 'category')->get()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error: ' . $e->getMessage()
+        ], 500);
+    }
+});
+
+/* ===============================
     FALLBACK ROUTE
 ================================ */
 Route::fallback(function () {
