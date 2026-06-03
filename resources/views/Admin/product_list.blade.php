@@ -1255,15 +1255,6 @@ if (typeof gsap !== 'undefined') {
             stagger: 0.05,
             ease: 'power2.out'
         });
-        
-        gsap.from('.premium-table tbody tr', {
-            y: 30,
-            opacity: 0,
-            duration: 0.6,
-            stagger: 0.03,
-            ease: 'power2.out',
-            delay: 0.2
-        });
     });
 }
 </script>
