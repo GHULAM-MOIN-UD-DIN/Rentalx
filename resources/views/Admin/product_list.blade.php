@@ -417,8 +417,7 @@
 
 /* ===== TABLE CARD ===== */
 .table-card {
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
+    background: rgba(17, 24, 39, 0.95); /* Increased opacity for better readability */
     border: 1px solid var(--border);
     border-radius: 2.5rem;
     overflow: hidden;
@@ -659,12 +658,12 @@ tr:hover .category-badge {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    opacity: 0.2;
-    transition: opacity 0.3s;
+    opacity: 1; /* Changed from 0.2 to 1 so buttons are always visible */
+    transition: all 0.3s;
 }
 
 tr:hover .action-group {
-    opacity: 1;
+    transform: scale(1.05);
 }
 
 .action-btn {
